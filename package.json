@@ -1,0 +1,65 @@
+{
+  "name": "@tarsilla/kanban",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./lib/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.cjs",
+      "default": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/*",
+    "src/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && rollup -c --bundleConfigAsCjs",
+    "prepub": "npm run build",
+    "pub": "npm publish --access public",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.4",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@storybook/addon-essentials": "^8.5.3",
+    "@storybook/addon-interactions": "^8.5.3",
+    "@storybook/addon-onboarding": "^8.5.3",
+    "@storybook/blocks": "^8.5.3",
+    "@storybook/react": "^8.5.3",
+    "@storybook/react-vite": "^8.5.3",
+    "@storybook/test": "^8.5.3",
+    "@tarsilla/eslint-config": "^0.0.36",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "rollup": "^4.34.3",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-tsconfig-paths": "^1.5.2",
+    "storybook": "^8.5.3",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@hello-pangea/dnd": "^17.0.0"
+  }
+}
