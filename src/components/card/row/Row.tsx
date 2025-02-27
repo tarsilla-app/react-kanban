@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 
 import { CardContractRow, CardValue } from '@types';
 
-import { Column } from '../column';
-import { Field } from '../field';
+import { Column } from '../column/index.js';
+import { Field } from '../field/index.js';
 
 type Props = {
   row: CardContractRow;

@@ -6,7 +6,7 @@ import { DragDropContext } from '@hello-pangea/dnd';
 
 import { CardContract, CardValue, ColumnContract, ColumnValue, Theme } from '@types';
 
-import { Board } from '../components';
+import { Board } from '../components/index.js';
 
 type ParentContainerProps = {
   height: string;

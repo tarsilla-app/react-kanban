@@ -5,9 +5,9 @@ import type { DraggableProvided } from '@hello-pangea/dnd';
 
 import { CardContract, CardValue, Theme } from '@types';
 
-import { Column } from './column';
-import { Row } from './row';
-import { borderRadius, grid } from '../constants';
+import { borderRadius, grid } from '../constants.js';
+import { Column } from './column/index.js';
+import { Row } from './row/index.js';
 
 function getBackgroundColor(isDragging: boolean, isGroupedOver: boolean, theme: Theme['card']): string {
   if (isDragging) {

@@ -1,1 +1,1 @@
-export * from './kanban';
+export * from './kanban/index.js';

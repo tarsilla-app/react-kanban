@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 
 import { CardContractColumn, CardValue } from '@types';
 
-import { Field } from '../field';
-import { Row } from '../row';
+import { Field } from '../field/index.js';
+import { Row } from '../row/index.js';
 
 const Container = styled.div`
   display: flex;

@@ -1,26 +1,23 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "nodenext",
     "target": "ESNext",
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
-    "moduleResolution": "Node",
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "jsx": "react-jsx",
-    "types": ["react", "react-dom"],
-    "allowJs": true,
+    "jsxImportSource": "@emotion/react",
     "paths": {
       "@types": [
-        "./src/types"
+        "./src/types/index.ts"
       ],
     }
   },
-  "include": ["**/*"],
-  "exclude": ["lib"]
+  "exclude": ["lib", ".storybook"]
 }

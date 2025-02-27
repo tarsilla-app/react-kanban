@@ -4,9 +4,9 @@ import { DraggableLocation, DropResult } from '@hello-pangea/dnd';
 import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { reorderQuoteMap } from './reorder';
-import { Kanban } from '../src';
-import { CardValue, ColumnContract, ColumnValue, ComponentType } from '../src/types';
+import { reorderQuoteMap } from './reorder.js';
+import { Kanban } from '../src/index.js';
+import { CardValue, ColumnContract, ColumnValue, ComponentType } from '../src/types/index.js';
 
 function onDragEnd(
   result: DropResult,

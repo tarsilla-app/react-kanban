@@ -11,8 +11,8 @@ import type {
 
 import { CardContract, CardValue, ColumnContract, ColumnValue, Theme } from '@types';
 
-import { Card } from '../../card';
-import { grid } from '../../constants';
+import { Card } from '../../card/index.js';
+import { grid } from '../../constants.js';
 
 export const getBackgroundColor = (
   isDraggingOver: boolean,

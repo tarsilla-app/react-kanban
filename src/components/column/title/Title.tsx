@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { borderRadius, grid } from '../../constants';
+import { borderRadius, grid } from '../../constants.js';
 
 //TODO background-color theme???
 const Header = styled.div`

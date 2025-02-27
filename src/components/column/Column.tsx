@@ -3,9 +3,9 @@ import { Draggable, DraggableProvided, DraggableStateSnapshot } from '@hello-pan
 
 import { CardContract, CardValue, ColumnContract, ColumnValue, Theme } from '@types';
 
-import { List } from './list';
-import { Title } from './title';
-import { grid } from '../constants';
+import { grid } from '../constants.js';
+import { List } from './list/index.js';
+import { Title } from './title/index.js';
 
 const Container = styled.div`
   margin: ${grid}px;

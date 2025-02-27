@@ -4,7 +4,7 @@ import { Droppable } from '@hello-pangea/dnd';
 
 import { CardContract, CardValue, ColumnContract, ColumnValue, Theme } from '@types';
 
-import { Column } from '../column';
+import { Column } from '../column/index.js';
 
 //TODO theme
 const Container = styled.div`

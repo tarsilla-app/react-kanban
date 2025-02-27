@@ -1,6 +1,6 @@
 import { CardContractField, CardValue } from '@types';
 
-import { Text } from '../../text';
+import { Text } from '../../text/index.js';
 
 const components = {
   Text,
