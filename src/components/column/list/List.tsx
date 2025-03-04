@@ -2,14 +2,11 @@ import { CSSProperties, memo, ReactElement } from 'react';
 
 import styled from '@emotion/styled';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
-import type {
-  DraggableProvided,
-  DraggableStateSnapshot,
-  DroppableProvided,
-  DroppableStateSnapshot,
-} from '@hello-pangea/dnd';
+import type { DroppableProvided, DroppableStateSnapshot } from '@hello-pangea/dnd';
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
+import { FieldValues } from 'react-hook-form';
 
-import { CardContract, CardValue, ColumnContract, ColumnValue, Theme } from '@types';
+import { CardContract, CardValue, ColumnValue, ContractColumn, Theme } from '@types';
 
 import { Card } from '../../card/index.js';
 import { grid } from '../../constants.js';
@@ -70,96 +67,157 @@ const ScrollContainer = styled.div`
 
 const Container = styled.div``;
 
-type CardListProps = {
-  card: CardContract;
-  value?: ColumnValue;
+// ...existing code...
+function DraggableCard<FormValue extends FieldValues>({
+  innerCard,
+  index,
+  contract,
+  components,
+  theme,
+  onCardValueChange,
+  onCardClick,
+}: {
+  innerCard: CardValue<FormValue>;
+  index: number;
+  contract: CardContract<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
   theme: Theme['card'];
-  onCardClick?: (card: CardContract, values?: CardValue[]) => void;
+  onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
+  onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
+}) {
+  return (
+    <Draggable draggableId={innerCard.id} index={index}>
+      {(dragProvided, dragSnapshot) => (
+        <Card
+          key={innerCard.id}
+          contract={contract}
+          value={innerCard}
+          components={components}
+          isDragging={dragSnapshot.isDragging}
+          isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
+          provided={dragProvided}
+          theme={theme}
+          onCardValueChange={onCardValueChange}
+          onCardClick={onCardClick}
+        />
+      )}
+    </Draggable>
+  );
+}
+
+type CardListProps<FormValue extends FieldValues> = {
+  contract: CardContract<FormValue>;
+  value?: ColumnValue<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
+  theme: Theme['card'];
+  onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
+  onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
 };
 
-type InnerCard = {
-  id: string;
-  values: CardValue[];
-};
-
-function InnerCardList({ card, value, theme, onCardClick }: CardListProps): ReactElement {
-  const cards = value?.cards?.reduce<InnerCard[]>((cards, value) => {
-    const card = cards.find((card) => card.id === value.cardId);
-    if (card) {
-      card.values.push(value);
-    } else {
-      cards.push({ id: value.cardId, values: [value] });
-    }
-
-    return cards;
-  }, []);
+function InnerCardList<FormValue extends FieldValues>({
+  contract,
+  value,
+  components,
+  theme,
+  onCardValueChange,
+  onCardClick,
+}: CardListProps<FormValue>): ReactElement {
   return (
     <>
-      {cards?.map((innerCard: InnerCard, index: number) => (
-        <Draggable key={innerCard.id} draggableId={innerCard.id} index={index}>
-          {(dragProvided: DraggableProvided, dragSnapshot: DraggableStateSnapshot) => (
-            <Card
-              key={index}
-              card={card}
-              values={innerCard.values}
-              isDragging={dragSnapshot.isDragging}
-              isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
-              provided={dragProvided}
-              theme={theme}
-              onClick={onCardClick}
-            />
-          )}
-        </Draggable>
+      {value?.cards?.map((innerCard, index) => (
+        <DraggableCard
+          key={innerCard.id}
+          innerCard={innerCard}
+          index={index}
+          contract={contract}
+          components={components}
+          theme={theme}
+          onCardValueChange={onCardValueChange}
+          onCardClick={onCardClick}
+        />
       ))}
     </>
   );
 }
+// ...existing code...
 
-const InnerListMemo = memo<CardListProps>(InnerCardList);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const InnerListMemo = memo<CardListProps<any>>(InnerCardList);
 
-type InnerListProps = {
-  dropProvided: DroppableProvided;
-  card: CardContract;
-  value?: ColumnValue;
+type InnerListProps<FormValue extends FieldValues> = {
+  contract: CardContract<FormValue>;
+  value?: ColumnValue<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
   theme: Theme['card'];
-  onCardClick?: (card: CardContract, values?: CardValue[]) => void;
+  onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
+  onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
+
+  dropProvided: DroppableProvided;
 };
 
-function InnerList({ card, value, dropProvided, theme, onCardClick }: InnerListProps) {
+function InnerList<FormValue extends FieldValues>({
+  contract,
+  value,
+  components,
+  dropProvided,
+  theme,
+  onCardValueChange,
+  onCardClick,
+}: InnerListProps<FormValue>) {
   //TODO test remove Container
   //TODO add card Style somewhere
   return (
     <Container>
       <DropZone ref={dropProvided.innerRef}>
-        <InnerListMemo card={card} value={value} theme={theme} onCardClick={onCardClick} />
+        <InnerListMemo
+          contract={contract}
+          value={value}
+          components={components}
+          theme={theme}
+          onCardValueChange={onCardValueChange}
+          onCardClick={onCardClick}
+        />
         {dropProvided.placeholder}
       </DropZone>
     </Container>
   );
 }
 
-type Props = {
-  column: ColumnContract;
-  value?: ColumnValue;
+type Props<FormValue extends FieldValues> = {
+  contract: ContractColumn<FormValue>;
+  value?: ColumnValue<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
+  theme: Theme;
+  onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
+  onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
+
+  // may not be provided - and might be null
+  ignoreContainerClipping?: boolean;
   internalScroll?: boolean;
   scrollContainerStyle?: CSSProperties;
   isDropDisabled?: boolean;
   isCombineEnabled?: boolean;
-  style?: CSSProperties;
-  // may not be provided - and might be null
-  ignoreContainerClipping?: boolean;
-  theme: Theme;
-  onCardClick?: (card: CardContract, values?: CardValue[]) => void;
 };
 
-function List(props: Props): ReactElement {
-  //TODO inner
-  const { internalScroll, scrollContainerStyle, isDropDisabled, isCombineEnabled, column, value, theme, onCardClick } =
-    props;
-
+function List<FormValue extends FieldValues>({
+  internalScroll,
+  scrollContainerStyle,
+  isDropDisabled,
+  isCombineEnabled,
+  contract,
+  value,
+  components,
+  theme,
+  onCardValueChange,
+  onCardClick,
+}: Props<FormValue>): ReactElement {
   return (
     <Droppable
-      droppableId={column.id}
+      droppableId={contract.id}
       type={'QUOTE'}
       ignoreContainerClipping={internalScroll}
       isDropDisabled={isDropDisabled}
@@ -176,19 +234,23 @@ function List(props: Props): ReactElement {
           {internalScroll ? (
             <ScrollContainer style={scrollContainerStyle}>
               <InnerList
-                card={column.card}
+                contract={contract.card}
                 value={value}
+                components={components}
                 dropProvided={dropProvided}
                 theme={theme.card}
+                onCardValueChange={onCardValueChange}
                 onCardClick={onCardClick}
               />
             </ScrollContainer>
           ) : (
             <InnerList
-              card={column.card}
+              contract={contract.card}
               value={value}
+              components={components}
               dropProvided={dropProvided}
               theme={theme.card}
+              onCardValueChange={onCardValueChange}
               onCardClick={onCardClick}
             />
           )}

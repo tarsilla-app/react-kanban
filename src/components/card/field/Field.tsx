@@ -1,23 +1,33 @@
-import { CardContractField, CardValue } from '@types';
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
-import { Text } from '../../text/index.js';
+import { CardContractField } from '@types';
 
-const components = {
-  Text,
+type Props<FormValue extends FieldValues> = {
+  contract: CardContractField<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
 };
 
-type Props = {
-  field: CardContractField;
-  values?: CardValue[];
-};
+function Field<FormValue extends FieldValues>({ contract, components }: Props<FormValue>): JSX.Element {
+  const { control } = useFormContext<FormValue>();
 
-function Field({ field, values }: Props): JSX.Element {
-  const Component = components[field.component];
+  const { id, component, ...rest } = contract;
 
-  const fieldValue = values?.find((value) => value.fieldId === field.id);
-  const value = fieldValue?.value as string | undefined;
+  const Component = components.find((c) => c.id === component);
+  if (!Component) {
+    throw new Error(`Component '${component}' not found`);
+  }
 
-  return <Component id={field.id} value={value} style={field.style} />;
+  return (
+    <Controller
+      name={id}
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <Component.render id={id} onChange={onChange} value={value} {...rest} />
+      )}
+    />
+  );
 }
 
 /*

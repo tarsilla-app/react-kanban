@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import type { DroppableProvided } from '@hello-pangea/dnd';
 import { Droppable } from '@hello-pangea/dnd';
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
+import { FieldValues } from 'react-hook-form';
 
-import { CardContract, CardValue, ColumnContract, ColumnValue, Theme } from '@types';
+import { CardContract, CardValue, ContractColumn, KanbanValue, Theme } from '@types';
 
 import { Column } from '../column/index.js';
 
@@ -15,25 +17,31 @@ const Container = styled.div`
   display: inline-flex;
 `;
 
-type Props = {
-  columns: ColumnContract[];
-  values?: ColumnValue[];
+type Props<FormValue extends FieldValues> = {
+  columns: ContractColumn<FormValue>[];
+  value?: KanbanValue<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
+  theme: Theme;
+  onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
+  onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
+
   withScrollableColumns?: boolean;
   isCombineEnabled?: boolean;
   containerHeight?: string;
-  theme: Theme;
-  onCardClick?: (card: CardContract, values?: CardValue[]) => void;
 };
 
-function Board({
+function Board<FormValue extends FieldValues>({
   columns,
-  values,
+  value,
+  components,
+  theme,
+  onCardValueChange,
+  onCardClick,
   withScrollableColumns,
   isCombineEnabled,
   containerHeight,
-  theme,
-  onCardClick,
-}: Props): JSX.Element {
+}: Props<FormValue>): JSX.Element {
   return (
     <Droppable
       droppableId='board'
@@ -45,17 +53,19 @@ function Board({
     >
       {(provided: DroppableProvided) => (
         <Container ref={provided.innerRef} {...provided.droppableProps}>
-          {columns.map((column: ColumnContract, index: number) => {
-            const value = values?.find((value) => value.columnId === column.id);
+          {columns.map((column: ContractColumn<FormValue>, index: number) => {
+            const columnValue = value?.columns?.find((value) => value.id === column.id);
             return (
               <Column
                 key={column.id}
                 index={index}
-                column={column}
-                value={value}
+                contract={column}
+                value={columnValue}
+                components={components}
                 isScrollable={withScrollableColumns}
                 isCombineEnabled={isCombineEnabled}
                 theme={theme}
+                onCardValueChange={onCardValueChange}
                 onCardClick={onCardClick}
               />
             );

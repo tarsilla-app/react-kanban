@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
+import { FieldValues } from 'react-hook-form';
 
-import { CardContractColumn, CardValue } from '@types';
+import { CardContractColumn } from '@types';
 
 import { Field } from '../field/index.js';
 import { Row } from '../row/index.js';
@@ -9,21 +11,22 @@ const Container = styled.div`
   display: flex;
   flex-flow: column;
   row-gap: 4px;
-  width: '100%';
-  height: '100%';
+  width: 100%;
+  height: 100%;
 `;
 
-type Props = {
-  column: CardContractColumn;
-  values?: CardValue[];
+type Props<FormValue extends FieldValues> = {
+  contract: CardContractColumn<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
 };
 
-function Column({ column, values }: Props): JSX.Element {
+function Column<FormValue extends FieldValues>({ contract, components }: Props<FormValue>): JSX.Element {
   return (
-    <Container style={column.style}>
-      {column.fields?.map((field, index) => <Field field={field} values={values} key={index} />)}
-      {column.rows?.map((row, index) => <Row row={row} values={values} key={index} />)}
-      {column.columns?.map((column, index) => <Column column={column} values={values} key={index} />)}
+    <Container style={contract.style}>
+      {contract.fields?.map((field, index) => <Field contract={field} components={components} key={index} />)}
+      {contract.rows?.map((row, index) => <Row contract={row} components={components} key={index} />)}
+      {contract.columns?.map((column, index) => <Column contract={column} components={components} key={index} />)}
     </Container>
   );
 }

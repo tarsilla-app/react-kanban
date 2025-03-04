@@ -14,44 +14,42 @@ function reorder<TItem>(list: TItem[], startIndex: number, endIndex: number): TI
 
 export default reorder;
 
-interface ReorderQuoteMapArgs<FormValue extends FieldValues> {
-  values: ColumnValue<FormValue>[];
+type ReorderQuoteMapArgs<FormValue extends FieldValues> = {
+  columns: ColumnValue<FormValue>[];
   source: DraggableLocation;
   destination: DraggableLocation;
-}
-
-export interface ReorderQuoteMapResult<FormValue extends FieldValues> {
-  values: ColumnValue<FormValue>[];
-}
+};
 
 export const reorderQuoteMap = <FormValue extends FieldValues>({
-  values,
+  columns,
   source,
   destination,
-}: ReorderQuoteMapArgs<FormValue>): ReorderQuoteMapResult<FormValue> => {
-  const current: CardValue<FormValue>[] = [...(values.find((value) => value.id === source.droppableId)?.cards ?? [])];
-  const next: CardValue<FormValue>[] = [...(values.find((value) => value.id === destination.droppableId)?.cards ?? [])];
+}: ReorderQuoteMapArgs<FormValue>): ColumnValue<FormValue>[] => {
+  const current: CardValue<FormValue>[] = [
+    ...(columns.find((column) => column.id === source.droppableId)?.cards ?? []),
+  ];
+  const next: CardValue<FormValue>[] = [
+    ...(columns.find((column) => column.id === destination.droppableId)?.cards ?? []),
+  ];
   const target: CardValue<FormValue> = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
     const reordered: CardValue<FormValue>[] = reorder(current, source.index, destination.index);
 
-    const result = values.reduce<ColumnValue<FormValue>[]>((values, value) => {
-      if (value.id === source.droppableId) {
-        values.push({
-          id: value.id,
+    const result = columns.reduce<ColumnValue<FormValue>[]>((_columns, column) => {
+      if (column.id === source.droppableId) {
+        _columns.push({
+          id: column.id,
           cards: reordered,
         });
       } else {
-        values.push(value);
+        _columns.push(column);
       }
-      return values;
+      return _columns;
     }, []);
 
-    return {
-      values: result,
-    };
+    return result;
   }
 
   // remove from original
@@ -59,44 +57,42 @@ export const reorderQuoteMap = <FormValue extends FieldValues>({
   // insert into next
   next.splice(destination.index, 0, target);
 
-  const result = values.reduce<ColumnValue<FormValue>[]>((values, value) => {
-    if (value.id === source.droppableId) {
-      values.push({
-        id: value.id,
+  const result = columns.reduce<ColumnValue<FormValue>[]>((_columns, column) => {
+    if (column.id === source.droppableId) {
+      _columns.push({
+        id: column.id,
         cards: current,
       });
-    } else if (value.id === destination.droppableId) {
-      values.push({
-        id: value.id,
+    } else if (column.id === destination.droppableId) {
+      _columns.push({
+        id: column.id,
         cards: next,
       });
     } else {
-      values.push(value);
+      _columns.push(column);
     }
-    return values;
+    return _columns;
   }, []);
 
-  return {
-    values: result,
-  };
+  return result;
 };
 
-interface List<T> {
+type List<T> = {
   id: string;
   values: T[];
-}
+};
 
-interface MoveBetweenArgs<T> {
+type MoveBetweenArgs<T> = {
   list1: List<T>;
   list2: List<T>;
   source: DraggableLocation;
   destination: DraggableLocation;
-}
+};
 
-interface MoveBetweenResult<T> {
+type MoveBetweenResult<T> = {
   list1: List<T>;
   list2: List<T>;
-}
+};
 
 export function moveBetween<T>({ list1, list2, source, destination }: MoveBetweenArgs<T>): MoveBetweenResult<T> {
   const newFirst = [...list1.values];

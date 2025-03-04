@@ -1,7 +1,9 @@
-import { CSSProperties, memo } from 'react';
+import { CSSProperties, memo, useEffect } from 'react';
 
 import styled from '@emotion/styled';
 import type { DraggableProvided } from '@hello-pangea/dnd';
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
+import { FieldValues, FormProvider, useForm } from 'react-hook-form';
 
 import { CardContract, CardValue, Theme } from '@types';
 
@@ -95,40 +97,57 @@ function getStyle(provided: DraggableProvided, style?: CSSProperties | null) {
   };
 }
 
-type CardProps = {
-  card: CardContract;
-  values?: CardValue[];
+type CardProps<FormValue extends FieldValues> = {
+  contract: CardContract<FormValue>;
+  value: CardValue<FormValue>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  components: KanbanComponent<any, any>[];
+  theme: Theme['card'];
+  onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
+  onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
+
   isDragging: boolean;
   isGroupedOver?: boolean;
   provided: DraggableProvided;
-  theme: Theme['card'];
-  onClick?: (card: CardContract, values?: CardValue[]) => void;
 };
 
-function CardComponent(props: CardProps): JSX.Element {
-  const { card, values, isDragging, isGroupedOver, provided, theme, onClick } = props;
+function CardComponent<FormValue extends FieldValues>(props: CardProps<FormValue>): JSX.Element {
+  const { contract, value, components, theme, onCardValueChange, onCardClick, isDragging, isGroupedOver, provided } =
+    props;
+
+  const methods = useForm<FormValue>({
+    values: value?.values,
+  });
+  const formValues = methods.watch();
+
+  useEffect(() => {
+    onCardValueChange({ value: { id: value.id, values: formValues } });
+  }, [value, formValues, onCardValueChange]);
 
   return (
-    <Container
-      isDragging={isDragging}
-      isGroupedOver={Boolean(isGroupedOver)}
-      theme={theme}
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-      style={getStyle(provided, card.style)}
-      //data-is-dragging={isDragging}
-      //data-testid={`card-${index}`}
-      //data-index={index}
-      //aria-label={`${quote.author.name} quote ${quote.content}`}
-      onClick={() => onClick?.(card, values)}
-    >
-      {card.rows?.map((row, index) => <Row row={row} values={values} key={index} />)}
-      {card.columns?.map((column, index) => <Column column={column} values={values} key={index} />)}
-    </Container>
+    <FormProvider {...methods}>
+      <Container
+        isDragging={isDragging}
+        isGroupedOver={Boolean(isGroupedOver)}
+        theme={theme}
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+        style={getStyle(provided, contract.style)}
+        //data-is-dragging={isDragging}
+        //data-testid={`card-${index}`}
+        //data-index={index}
+        //aria-label={`${quote.author.name} quote ${quote.content}`}
+        onClick={() => onCardClick?.({ contract, value })}
+      >
+        {contract.rows?.map((row, index) => <Row contract={row} components={components} key={index} />)}
+        {contract.columns?.map((column, index) => <Column contract={column} components={components} key={index} />)}
+      </Container>
+    </FormProvider>
   );
 }
 
-const CardMemo = memo<CardProps>(CardComponent);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CardMemo = memo<CardProps<any>>(CardComponent);
 
 export { CardMemo as Card };

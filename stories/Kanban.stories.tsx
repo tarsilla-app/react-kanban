@@ -1,63 +1,18 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { DraggableLocation, DropResult } from '@hello-pangea/dnd';
-import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { reorderQuoteMap } from './reorder.js';
+import { useKanban } from '../src/hooks/useKanban.js';
 import { Kanban } from '../src/index.js';
-import { CardValue, ColumnContract, ColumnValue, ComponentType } from '../src/types/index.js';
+import { Contract, KanbanValue } from '../src/types/index.js';
 
-function onDragEnd(
-  result: DropResult,
-  values: ColumnValue[],
-  setValues: Dispatch<SetStateAction<ColumnValue[]>>,
-): void {
-  //COMBINE
-  if (result.combine) {
-    const newValues = values.reduce<ColumnValue[]>((values, value) => {
-      if (value.columnId === result.source.droppableId) {
-        const withQuoteRemoved: CardValue[] = [...(value.cards ?? [])];
-        withQuoteRemoved.splice(result.source.index, 1);
+type Value = {
+  field1: string;
+};
 
-        values.push({
-          columnId: value.columnId,
-          cards: withQuoteRemoved,
-        });
-      } else {
-        values.push(value);
-      }
-      return values;
-    }, []);
-
-    setValues(newValues);
-    return;
-  }
-
-  // dropped nowhere
-  if (!result.destination) {
-    return;
-  }
-
-  const source: DraggableLocation = result.source;
-  const destination: DraggableLocation = result.destination;
-
-  // did not move anywhere - can bail early
-  if (source.droppableId === destination.droppableId && source.index === destination.index) {
-    return;
-  }
-
-  const data = reorderQuoteMap({
-    values,
-    source,
-    destination,
-  });
-
-  setValues(data.values);
-}
-
-function KanbanStory(): JSX.Element {
-  const columns: ColumnContract[] = [
+const initialContract: Contract<Value> = {
+  debounceWait: 2000,
+  columns: [
     {
       id: 'column1',
       title: 'Lane 1',
@@ -71,7 +26,7 @@ function KanbanStory(): JSX.Element {
             fields: [
               {
                 id: 'field1',
-                component: ComponentType.Text,
+                component: 'text',
                 /*style: {
                   color: 'red',
                 },*/
@@ -94,7 +49,7 @@ function KanbanStory(): JSX.Element {
             fields: [
               {
                 id: 'field1',
-                component: ComponentType.Text,
+                component: 'text',
               },
             ],
           },
@@ -117,44 +72,75 @@ function KanbanStory(): JSX.Element {
             fields: [
               {
                 id: 'field1',
-                component: ComponentType.Text,
+                component: 'text',
+                editable: true,
               },
             ],
           },
         ],
       },
     },
-  ];
+  ],
+};
 
-  const _values: ColumnValue[] = [
+const initialValue: KanbanValue<Value> = {
+  id: 'kanban1',
+  columns: [
     {
-      columnId: 'column1',
+      id: 'column1',
       cards: [
         {
-          cardId: 'column1-card1',
-          fieldId: 'field1',
-          value: 'hello value 1',
+          id: 'column1-card1',
+          values: {
+            field1: 'hello value 1',
+          },
         },
       ],
     },
     {
-      columnId: 'column2',
+      id: 'column2',
       cards: [
         {
-          cardId: 'column2-card1',
-          fieldId: 'field1',
-          value: 'hello value 2',
+          id: 'column2-card1',
+          values: {
+            field1: 'hello value 2',
+          },
         },
       ],
     },
     {
-      columnId: 'column3',
+      id: 'column3',
       cards: [],
     },
-  ];
+  ],
+};
 
-  const [values, setValues] = useState<ColumnValue[]>(_values);
+function CatchKanban({ contract }: { contract: Contract<Value> }): JSX.Element {
+  try {
+    const kanban = useKanban({ contract, value: initialValue });
 
+    return (
+      <Kanban kanban={kanban} onCardClick={(event) => console.log(event)} onChange={(event) => console.log(event)} />
+    );
+  } catch (error: unknown) {
+    return <>{(error as Error).message}</>;
+  }
+}
+
+function KanbanStory(): JSX.Element {
+  const [value, setValue] = useState<string>(JSON.stringify(initialContract, null, 2));
+  const [error, setError] = useState<string>();
+  const [contract, setContract] = useState<Contract<Value>>(initialContract);
+
+  useEffect(() => {
+    try {
+      const parsed = JSON.parse(value) as Contract<Value>;
+      setContract(parsed);
+      setError(undefined);
+    } catch (e: unknown) {
+      setError((e as Error).message);
+    }
+  }, [value]);
   return (
     <div
       style={{
@@ -168,41 +154,31 @@ function KanbanStory(): JSX.Element {
         style={{
           display: 'flex',
           flexFlow: 'column',
-          //rowGap: '4px',
+          rowGap: '4px',
           width: '25vw',
         }}
       >
-        <textarea
-          //value={contractEditorValue}
-          //onChange={(event) => setContractEditorValue(event.target.value)}
-          rows={30}
-        />
+        <textarea value={value} onChange={(event) => setValue(event.target.value)} rows={30} />
       </div>
       <div
         style={{
           display: 'flex',
           flexFlow: 'column',
-          //rowGap: '4px',
+          rowGap: '4px',
           borderWidth: '1px',
           borderColor: 'black',
           borderStyle: 'solid',
-          width: '65vw',
-          //padding: '8px',
-          overflowX: 'auto',
+          width: '60vw',
+          padding: '8px',
         }}
       >
-        <Kanban
-          columns={columns}
-          values={values}
-          onDragEnd={(result) => onDragEnd(result, values, setValues)}
-          isCombineEnabled={true}
-        />
+        {error ? <>{error}</> : <CatchKanban contract={contract} />}
       </div>
     </div>
   );
 }
 
-const meta = {
+const meta: Meta<typeof KanbanStory> = {
   title: 'KanbanBuilder',
   component: KanbanStory,
   parameters: {
@@ -211,16 +187,7 @@ const meta = {
   },
   argTypes: {},
   args: {},
-  decorators: [
-    (Story, ctx) => {
-      const [, setArgs] = useArgs<typeof ctx.args>();
-
-      setArgs(ctx.args);
-
-      return <Story args={{ ...ctx.args }} />;
-    },
-  ],
-} satisfies Meta<typeof KanbanStory>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
