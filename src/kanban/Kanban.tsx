@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, JSX } from 'react';
 
 import styled from '@emotion/styled';
 import { DragDropContext, DragDropContextProps, DropResult } from '@hello-pangea/dnd';

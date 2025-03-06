@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import styled from '@emotion/styled';
 import type { DroppableProvided } from '@hello-pangea/dnd';
 import { Droppable } from '@hello-pangea/dnd';

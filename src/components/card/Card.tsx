@@ -1,4 +1,4 @@
-import { CSSProperties, memo, useEffect } from 'react';
+import { CSSProperties, JSX, memo, useEffect } from 'react';
 
 import styled from '@emotion/styled';
 import type { DraggableProvided } from '@hello-pangea/dnd';
@@ -133,7 +133,7 @@ function CardComponent<FormValue extends FieldValues>(props: CardProps<FormValue
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
-        style={getStyle(provided, contract.style)}
+        style={getStyle(provided, contract.theme)}
         //data-is-dragging={isDragging}
         //data-testid={`card-${index}`}
         //data-index={index}

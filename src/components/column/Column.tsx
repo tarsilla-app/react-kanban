@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import styled from '@emotion/styled';
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
 import { KanbanComponent } from '@tarsilla/react-kanban-components';
@@ -47,7 +49,7 @@ function Column<FormValue extends FieldValues>({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          style={contract.style}
+          style={contract.theme}
         >
           <Title title={contract.title} />
           <List

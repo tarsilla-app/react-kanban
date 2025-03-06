@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import styled from '@emotion/styled';
 
 import { borderRadius, grid } from '../../constants.js';

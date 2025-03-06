@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 

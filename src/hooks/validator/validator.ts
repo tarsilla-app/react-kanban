@@ -11,14 +11,16 @@ function validateCardFields<FormValue extends FieldValues>({
 }): string[] {
   return (
     fields?.reduce<string[]>((ids, field) => {
-      //TODO ID não pode ter caracter especial nem espaço
-      //TODO cant have debounceWait
       if (!field.id) {
         throw new Error('Field id is required');
+      } else if (!/^[A-Za-z0-9_]+$/.test(field.id)) {
+        throw new Error('Field id must not contain special characters or spaces');
       } else if (!field.component) {
         throw new Error('Field component is required');
       } else if (!allowedComponents.includes(field.component)) {
         throw new Error(`Component '${field.component}' is not allowed`);
+      } else if (field.debounceWait) {
+        throw new Error('Field dont have debounceWait');
       }
       return [...ids, field.id as string];
     }, []) ?? []

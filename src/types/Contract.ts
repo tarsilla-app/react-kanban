@@ -14,7 +14,7 @@ type Contract<FormValue extends FieldValues> = {
 type ContractColumn<FormValue extends FieldValues> = {
   id: string;
   title?: string;
-  style?: CSSProperties;
+  theme?: CSSProperties;
   card: CardContract<FormValue>;
 };
 

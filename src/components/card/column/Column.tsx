@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import styled from '@emotion/styled';
 import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { FieldValues } from 'react-hook-form';
@@ -23,7 +25,7 @@ type Props<FormValue extends FieldValues> = {
 
 function Column<FormValue extends FieldValues>({ contract, components }: Props<FormValue>): JSX.Element {
   return (
-    <Container style={contract.style}>
+    <Container style={contract.theme}>
       {contract.fields?.map((field, index) => <Field contract={field} components={components} key={index} />)}
       {contract.rows?.map((row, index) => <Row contract={row} components={components} key={index} />)}
       {contract.columns?.map((column, index) => <Column contract={column} components={components} key={index} />)}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
@@ -16,7 +16,7 @@ const initialContract: Contract<Value> = {
     {
       id: 'column1',
       title: 'Lane 1',
-      style: {
+      theme: {
         width: 'calc(calc(100% - calc(16px * 3) / 3)',
         maxWidth: '200px',
       },
@@ -27,7 +27,7 @@ const initialContract: Contract<Value> = {
               {
                 id: 'field1',
                 component: 'text',
-                /*style: {
+                /*theme: {
                   color: 'red',
                 },*/
               },
@@ -39,7 +39,7 @@ const initialContract: Contract<Value> = {
     {
       id: 'column2',
       title: 'Lane 2',
-      style: {
+      theme: {
         width: 'calc(calc(100% - calc(16px * 3) / 3)',
         maxWidth: '200px',
       },
@@ -54,7 +54,7 @@ const initialContract: Contract<Value> = {
             ],
           },
         ],
-        /*style: {
+        /*theme: {
           color: 'blue',
         },*/
       },
@@ -62,7 +62,7 @@ const initialContract: Contract<Value> = {
     {
       id: 'column3',
       title: 'Lane 3',
-      style: {
+      theme: {
         width: 'calc(calc(100% - calc(16px * 3) / 3)',
         maxWidth: '200px',
       },

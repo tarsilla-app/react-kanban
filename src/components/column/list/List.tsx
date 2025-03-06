@@ -65,8 +65,6 @@ const ScrollContainer = styled.div`
   max-height: ${scrollContainerHeight}px;
 `;
 
-const Container = styled.div``;
-
 // ...existing code...
 function DraggableCard<FormValue extends FieldValues>({
   innerCard,
@@ -167,22 +165,19 @@ function InnerList<FormValue extends FieldValues>({
   onCardValueChange,
   onCardClick,
 }: InnerListProps<FormValue>) {
-  //TODO test remove Container
   //TODO add card Style somewhere
   return (
-    <Container>
-      <DropZone ref={dropProvided.innerRef}>
-        <InnerListMemo
-          contract={contract}
-          value={value}
-          components={components}
-          theme={theme}
-          onCardValueChange={onCardValueChange}
-          onCardClick={onCardClick}
-        />
-        {dropProvided.placeholder}
-      </DropZone>
-    </Container>
+    <DropZone ref={dropProvided.innerRef}>
+      <InnerListMemo
+        contract={contract}
+        value={value}
+        components={components}
+        theme={theme}
+        onCardValueChange={onCardValueChange}
+        onCardClick={onCardClick}
+      />
+      {dropProvided.placeholder}
+    </DropZone>
   );
 }
 
