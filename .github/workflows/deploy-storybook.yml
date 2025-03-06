@@ -1,7 +1,10 @@
+name: Publish Github Pages
+
 on:
-  push:
-    branches:
-      - "main"
+  workflow_run:
+    workflows: ["Code Analysis"]
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -10,12 +13,15 @@ permissions:
 
 jobs:
   deploy:
+    name: Deploy
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.build-publish.outputs.page_url }}
-    runs-on: ubuntu-latest
+
     steps:
-      - id: build-publish
+      - name: Deploy to GitHub Pages
         uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
         with:
           path: storybook-static
