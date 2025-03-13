@@ -1,14 +1,14 @@
 import { JSX } from 'react';
 
-import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
 
 import { CardContractField } from '@types';
 
 type Props<FormValue extends FieldValues> = {
   contract: CardContractField<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
 };
 
 function Field<FormValue extends FieldValues>({ contract, components }: Props<FormValue>): JSX.Element {

@@ -2,8 +2,6 @@ import { CSSProperties } from 'react';
 
 import { FieldValues, Path } from 'react-hook-form';
 
-import { UnknownObject } from './UnknownObject.js';
-
 type CardContract<FormValue extends FieldValues> = {
   rows?: CardContractRow<FormValue>[];
   columns?: CardContractColumn<FormValue>[];
@@ -28,6 +26,6 @@ type CardContractField<FormValue extends FieldValues> = {
   id: Path<FormValue>;
   component: string;
   theme?: CSSProperties;
-} & UnknownObject;
+} & Record<string, unknown>;
 
 export { type CardContract, type CardContractRow, type CardContractColumn, type CardContractField };

@@ -2,8 +2,9 @@ import { JSX } from 'react';
 
 import styled from '@emotion/styled';
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
-import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { FieldValues } from 'react-hook-form';
+
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
 
 import { CardContract, CardValue, ColumnValue, ContractColumn, Theme } from '@types';
 
@@ -21,8 +22,7 @@ type Props<FormValue extends FieldValues> = {
   index: number;
   contract: ContractColumn<FormValue>;
   value?: ColumnValue<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
   theme: Theme;
   onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
   onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;

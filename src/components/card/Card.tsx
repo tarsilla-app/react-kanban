@@ -1,9 +1,10 @@
-import { CSSProperties, JSX, memo, useEffect } from 'react';
+import { CSSProperties, JSX, memo, ReactElement, useEffect } from 'react';
 
 import styled from '@emotion/styled';
 import type { DraggableProvided } from '@hello-pangea/dnd';
-import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { FieldValues, FormProvider, useForm } from 'react-hook-form';
+
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
 
 import { CardContract, CardValue, Theme } from '@types';
 
@@ -100,8 +101,7 @@ function getStyle(provided: DraggableProvided, style?: CSSProperties | null) {
 type CardProps<FormValue extends FieldValues> = {
   contract: CardContract<FormValue>;
   value: CardValue<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
   theme: Theme['card'];
   onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
   onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
@@ -147,7 +147,6 @@ function CardComponent<FormValue extends FieldValues>(props: CardProps<FormValue
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CardMemo = memo<CardProps<any>>(CardComponent);
+const CardMemo = memo(CardComponent) as <FormValue extends FieldValues>(props: CardProps<FormValue>) => ReactElement;
 
 export { CardMemo as Card };

@@ -28,7 +28,7 @@ function useKanbanState<FormValue extends FieldValues>({
   );
 
   function getDebouncedOnChange(onChange?: (e: { value: KanbanValue<FormValue>; result?: DropResult }) => void) {
-    onChangeRef.current = onChange || null;
+    onChangeRef.current = onChange ?? null;
     if (debounceWait && onChange) {
       return debounceRef.current;
     }

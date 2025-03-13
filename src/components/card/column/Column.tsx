@@ -1,8 +1,9 @@
 import { JSX } from 'react';
 
 import styled from '@emotion/styled';
-import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { FieldValues } from 'react-hook-form';
+
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
 
 import { CardContractColumn } from '@types';
 
@@ -19,8 +20,7 @@ const Container = styled.div`
 
 type Props<FormValue extends FieldValues> = {
   contract: CardContractColumn<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
 };
 
 function Column<FormValue extends FieldValues>({ contract, components }: Props<FormValue>): JSX.Element {

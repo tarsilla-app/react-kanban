@@ -3,8 +3,9 @@ import { CSSProperties, memo, ReactElement } from 'react';
 import styled from '@emotion/styled';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import type { DroppableProvided, DroppableStateSnapshot } from '@hello-pangea/dnd';
-import { KanbanComponent } from '@tarsilla/react-kanban-components';
 import { FieldValues } from 'react-hook-form';
+
+import { KanbanComponent } from '@tarsilla/react-kanban-components';
 
 import { CardContract, CardValue, ColumnValue, ContractColumn, Theme } from '@types';
 
@@ -25,12 +26,12 @@ export const getBackgroundColor = (
   return theme.primary.backgroundColor;
 };
 
-interface WrapperProps {
+type WrapperProps = {
   isDraggingOver: boolean;
   isDraggingFrom: boolean;
   isDropDisabled: boolean;
   theme: Theme['column'];
-}
+};
 
 const Wrapper = styled.div<WrapperProps>`
   background-color: ${(props) => getBackgroundColor(props.isDraggingOver, props.isDraggingFrom, props.theme)};
@@ -78,8 +79,7 @@ function DraggableCard<FormValue extends FieldValues>({
   innerCard: CardValue<FormValue>;
   index: number;
   contract: CardContract<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
   theme: Theme['card'];
   onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
   onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
@@ -107,8 +107,7 @@ function DraggableCard<FormValue extends FieldValues>({
 type CardListProps<FormValue extends FieldValues> = {
   contract: CardContract<FormValue>;
   value?: ColumnValue<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
   theme: Theme['card'];
   onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
   onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
@@ -139,16 +138,15 @@ function InnerCardList<FormValue extends FieldValues>({
     </>
   );
 }
-// ...existing code...
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InnerListMemo = memo<CardListProps<any>>(InnerCardList);
+const InnerListMemo = memo(InnerCardList) as <FormValue extends FieldValues>(
+  props: CardListProps<FormValue>,
+) => ReactElement;
 
 type InnerListProps<FormValue extends FieldValues> = {
   contract: CardContract<FormValue>;
   value?: ColumnValue<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
   theme: Theme['card'];
   onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
   onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;
@@ -184,8 +182,7 @@ function InnerList<FormValue extends FieldValues>({
 type Props<FormValue extends FieldValues> = {
   contract: ContractColumn<FormValue>;
   value?: ColumnValue<FormValue>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  components: KanbanComponent<any, any>[];
+  components: KanbanComponent<unknown, object>[];
   theme: Theme;
   onCardValueChange: (event: { value: CardValue<FormValue> }) => void;
   onCardClick?: (event: { contract: CardContract<FormValue>; value: CardValue<FormValue> }) => void;

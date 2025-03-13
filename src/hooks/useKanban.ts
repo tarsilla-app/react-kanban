@@ -1,5 +1,6 @@
-import { Text } from '@tarsilla/react-kanban-components';
 import { FieldValues } from 'react-hook-form';
+
+import { Text } from '@tarsilla/react-kanban-components';
 
 import { UseKanbanProps, UseKanbanReturnProps } from '@types';
 
